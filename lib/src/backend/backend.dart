@@ -7,3 +7,8 @@ bool isDesktop(){
 	if(Platform.isWindows || Platform.isLinux || Platform.isMacOS){ return true; }
 	return false;
 }
+
+
+String formatEndLine(String input){
+	return input.replaceAll("\u000a", "\u000b");
+}

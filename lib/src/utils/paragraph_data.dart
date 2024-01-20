@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'package:awesome_text_field/src/backend/backend.dart';
 import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +28,20 @@ double calcLongestLine(String text, double width, TextStyle style) {
 	builder.pushStyle(ui.TextStyle(fontSize: style.fontSize, height: style.height, letterSpacing: style.letterSpacing));
 	builder.addText(text);
 	final paragraph = builder.build();
-	paragraph.layout(ui.ParagraphConstraints(width: width));
+	// paragraph.layout(ui.ParagraphConstraints(width: double.infinity));
 	return paragraph.longestLine;
 }
+
+
+double calcLineHeight(String text, TextStyle style) {
+	final builder = ui.ParagraphBuilder(ui.ParagraphStyle());
+	builder.pushStyle(ui.TextStyle(fontSize: style.fontSize, height: style.height, letterSpacing: style.letterSpacing));
+	builder.addText(text);
+	final paragraph = builder.build();
+	paragraph.layout(const ui.ParagraphConstraints(width: double.infinity));
+	return paragraph.computeLineMetrics().first.height;
+}
+
 
 /* Calculate text size */
 Size calcTextSize(
@@ -46,9 +58,9 @@ int getCurrentNumLine(TextEditingController controller) {
 	TextSelection selection = controller.selection;
 	String textBeforeCursor = "";
 	if(selection.baseOffset >= 0){
-		textBeforeCursor = controller.text.substring(0, selection.baseOffset);
+		textBeforeCursor = formatEndLine(controller.text).substring(0, selection.baseOffset);
 	}
-	int lineNumber = RegExp(r'\n').allMatches(textBeforeCursor).length + 1;
+	int lineNumber = RegExp('\u000b').allMatches(textBeforeCursor).length + 1;
 	return lineNumber;
 }
 
@@ -66,12 +78,7 @@ void updateDisplayedLineCount({
 		maxLines: null,
 	);
 
-	// 10000 letter and then line will break
-	// double theWidth = calcTextSize(context, "_").width * 10000;
-	// double theWidth = 100;
-	double theWidth = double.infinity;
-	// print("CALC WIDTH: $theWidth");
-	textPainter.layout(maxWidth: theWidth);
+	textPainter.layout(maxWidth: double.infinity);
 	List<LineMetrics> metrics = textPainter.computeLineMetrics();
 	List<String> line = controller.text.split("\n");
 	line.sort((a, b) => a.length.compareTo(b.length));
@@ -81,10 +88,6 @@ void updateDisplayedLineCount({
 			lineNumber: metrics.length,
 			lineHeight: metrics.isNotEmpty ? metrics.first.height: calcTextSize(context, "", style).height,
 			currentLine: getCurrentNumLine(controller),
-			longestLine: line.last.length > 20 ? calcTextSize(context, line.last.substring(0, line.last.length - 10)).width : 100
-			// longestLine: calcTextSize(
-			// 	context, (line.last.isNotEmpty || line.last.length > 20) ? line.last.substring(0, line.last.length - 10) : " ",
-			// 	style).width
 		)
 	);
 
