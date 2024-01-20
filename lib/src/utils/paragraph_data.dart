@@ -70,14 +70,16 @@ void updateDisplayedLineCount({
 	List<LineMetrics> metrics = textPainter.computeLineMetrics();
 	List<String> line = controller.text.split("\n");
 	line.sort((a, b) => a.length.compareTo(b.length));
+
 	onUpdate(
 		LineStatus(
 			lineNumber: metrics.length,
 			lineHeight: metrics.isNotEmpty ? metrics.first.height: calcTextSize(context, "", style).height,
 			currentLine: getCurrentNumLine(controller),
-			longestLine: calcTextSize(
-				context, line.last.isNotEmpty ?  line.last.substring(0, line.last.length - 10) : " ",
-				style).width
+			longestLine: line.last.length > 20 ? calcTextSize(context, line.last.substring(0, line.last.length - 10)).width : 100
+			// longestLine: calcTextSize(
+			// 	context, (line.last.isNotEmpty || line.last.length > 20) ? line.last.substring(0, line.last.length - 10) : " ",
+			// 	style).width
 		)
 	);
 

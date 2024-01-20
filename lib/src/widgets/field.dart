@@ -12,20 +12,24 @@ ValueNotifier<LineStatus> lineStatus = ValueNotifier(
 	LineStatus(lineNumber: 0, lineHeight: 0, currentLine: 0, longestLine: 1)
 );
 
-FocusNode keyboardFocus = FocusNode();
 
 class AwesomeTextField extends StatelessWidget {
 	final TextEditingController controller;
 	final TextStyle style;
+	final FocusNode? focusNode;
 	const AwesomeTextField({
 		super.key,
 		required this.controller,
-		required this.style
+		required this.style,
+		this.focusNode
 	});
 
 
 	@override
 	Widget build(BuildContext context) {
+
+		FocusNode keyboardFocus = focusNode ?? FocusNode();
+
 		controller.text;
 		controller.addListener(() {
 			updateDisplayedLineCount(
@@ -49,15 +53,16 @@ class AwesomeTextField extends StatelessWidget {
 								valueListenable: lineStatus,
 								builder: (_, value, __){
 									return Container(
-										margin: EdgeInsets.only(top: isDesktop() ? 10 : 11.5),
+										// margin: EdgeInsets.only(top: isDesktop() ? 10 : 11.5),
 										decoration: BoxDecoration(
 											color: Theme.of(context).colorScheme.secondaryContainer,
 											border: const Border(right: BorderSide(color: Colors.amber, width: 1))
 										),
 										width: 25,
-										height: MediaQuery.of(context).size.height + ((value.lineNumber - 1) * value.lineHeight),
+										height: MediaQuery.of(context).size.height + ((value.lineNumber - 10) * value.lineHeight),
 										child: Column(
 											children: [
+												SizedBox(height: isDesktop() ? 10 : 11.5),
 												for(int l = 0; l < (value.lineNumber); l++) Container(
 													color: (l + 1 == value.currentLine) ? Colors.amber : Theme.of(context).colorScheme.secondaryContainer,
 													height: value.lineHeight,
