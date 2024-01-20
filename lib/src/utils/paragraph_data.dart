@@ -44,7 +44,10 @@ Size calcTextSize(
 
 int getCurrentNumLine(TextEditingController controller) {
 	TextSelection selection = controller.selection;
-	String textBeforeCursor = controller.text.substring(0, selection.baseOffset);
+	String textBeforeCursor = "";
+	if(selection.baseOffset >= 0){
+		textBeforeCursor = controller.text.substring(0, selection.baseOffset);
+	}
 	int lineNumber = RegExp(r'\n').allMatches(textBeforeCursor).length + 1;
 	return lineNumber;
 }
@@ -64,7 +67,9 @@ void updateDisplayedLineCount({
 	);
 
 	// 10000 letter and then line will break
-	double theWidth = calcTextSize(context, "_").width * 10000;
+	// double theWidth = calcTextSize(context, "_").width * 10000;
+	// double theWidth = 100;
+	double theWidth = double.infinity;
 	// print("CALC WIDTH: $theWidth");
 	textPainter.layout(maxWidth: theWidth);
 	List<LineMetrics> metrics = textPainter.computeLineMetrics();
