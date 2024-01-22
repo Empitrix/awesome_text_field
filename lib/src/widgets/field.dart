@@ -1,4 +1,6 @@
+import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
+import 'package:awesome_text_field/src/models/regex_style.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:awesome_text_field/src/utils/keyboard.dart';
@@ -7,12 +9,16 @@ import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 
 
 class AwesomeTextField extends StatefulWidget {
-	final TextEditingController controller;
+	// final TextEditingController controller;
+	final AwesomeController controller;
 	final TextStyle style;
 	final FocusNode? focusNode;
 	final InputDecoration decoration;
 	final ValueChanged<String>? onChanged;
 	final int tabSize;
+	// final List<RegexStyle> regexStyle;
+	final List<RegexGroupStyle> regexStyle;
+
 	const AwesomeTextField({
 		super.key,
 		required this.controller,
@@ -21,7 +27,7 @@ class AwesomeTextField extends StatefulWidget {
 		this.decoration = const InputDecoration(border: InputBorder.none, hintText: ""),
 		this.onChanged,
 		this.tabSize = 4,
-
+		this.regexStyle = const [],
 });
 
 	@override
@@ -40,6 +46,13 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	// line
 	// double lineHeight = 0;
 	ValueNotifier<double> lineHeight = ValueNotifier(0);
+
+	void _updateValues(){
+		// regexStyle
+		// widget.controller.regexPatternMatchedList = widget.regexStyle;
+		widget.controller.setRegexStyle(widget.regexStyle);
+		// print(.regexPatternMatchedList);
+	}
 
 	void _update(){
 		updateDisplayedLineCount(
@@ -61,6 +74,7 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 
 	@override
 	void initState() {
+		_updateValues();
 		// Update Focus
 		if(widget.focusNode != null){
 			keyboardFocus = widget.focusNode!;}
@@ -107,7 +121,9 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 										// width: value.lineNumber > 0 ? 25 : 0,
 										// duration: const Duration(seconds: 1),
 										width: 25,
-										height: MediaQuery.of(context).size.height +
+										// height: MediaQuery.of(context).size.height +
+										// 	((value.lineNumber - 10) * value.lineHeight),
+										height: MediaQuery.sizeOf(context).height +
 											((value.lineNumber - 10) * value.lineHeight),
 										child: Column(
 											children: [
