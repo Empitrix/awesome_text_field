@@ -59,17 +59,11 @@ class AwesomeController extends TextEditingController {
 			RegExp(rules.map((rule) => rule.regex.pattern).join('|'), multiLine: true),
 			onMatch: (match) {
 				String mText = match.group(0)!;
-				// RegexStyle mRule = rules.firstWhere((rule) => rule.regex.hasMatch(mText));
 				RegexGroupStyle mRule = rules.firstWhere((rule) => rule.regex.hasMatch(mText));
-
-				// if(mRule.action != null){
-				// 	spans.add(mRule.action!(mText, match));
-				// } else {
-				// 	spans.add(
-				// 		TextSpan(text: mText, style: mRule.style.copyWith(fontSize: textStyle.fontSize))
-				// 	);
-				// }
-
+				if(mRule.regexStyles.isEmpty){
+					spans.add(TextSpan(text: mText, style: mRule.style.copyWith(fontSize: textStyle.fontSize)));
+					return "";
+				}
 				for(RegexStyle rStyle in mRule.regexStyles){
 					mText.splitMapJoin(
 						rStyle.regex,
@@ -83,11 +77,7 @@ class AwesomeController extends TextEditingController {
 						}
 					);
 				}
-
-
-				// print(mText);
-
-				return mText;
+				return "";
 			},
 			onNonMatch: (nonMatchedText) {
 				spans.add(
@@ -96,7 +86,7 @@ class AwesomeController extends TextEditingController {
 						style: textStyle
 					)
 				);
-				return nonMatchedText;
+				return "";
 			},
 		);
 
