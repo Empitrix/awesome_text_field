@@ -1,35 +1,37 @@
+import 'package:awesome_text_field/src/backend/backend.dart';
 import 'package:awesome_text_field/src/models/regex_style.dart';
 import 'package:flutter/material.dart';
 
 class AwesomeController extends TextEditingController {
 	AwesomeController();
-
-	// List<RegexStyle> regexStyles = [];
 	List<RegexGroupStyle> regexStyles = [];
+
+	@override
+	set value(TextEditingValue newValue) {
+		newValue = TextEditingValue(
+			text: formatEndLine(newValue.text),
+			selection: formatEndLine(newValue.text).length < newValue.selection.start ?
+				const TextSelection.collapsed(offset: -1) : newValue.selection,
+			composing: newValue.composing
+		);
+		super.value = newValue;
+	}
+
+
+	// @override
+	// set text(String newText) {
+	// 	super.text = newText;
+	// }
+
 
 	@override
 	TextSpan buildTextSpan({BuildContext? context, TextStyle? style, required bool withComposing}) {
 		final List<TextSpan> textSpanChildren = [];
-
-		// print(regexStyles);
-		// // textSpanChildren.add(TextSpan(text: text, style: style));
-		// text.splitMapJoin(
-		// 	RegExp(r'\#\w+'),
-		// 	onMatch: (Match onMatch){
-		// 		textSpanChildren.add(TextSpan(text: onMatch.group(0)!.replaceAll("#", ""), style: const TextStyle(color: Colors.red)));
-		// 		return onMatch.group(0)!;
-		// 	},
-		// 	onNonMatch: (String nonMatchString){
-		// 		textSpanChildren.add(TextSpan(text: nonMatchString, style: style));
-		// 		return nonMatchString;
-		// 	}
-		// );
 		TextSpan span = const TextSpan();
-
 		if(regexStyles.isNotEmpty){
 			span = _applyRules(
-				// context: context,
-				content: text,
+				// content: text,
+				content: formatEndLine(text),
 				textStyle: style ?? const TextStyle(),
 				rules: regexStyles
 			);
@@ -37,21 +39,7 @@ class AwesomeController extends TextEditingController {
 			span = TextSpan(text: text, style: style);
 		}
 		textSpanChildren.add(span);
-
 		return TextSpan(style: style, children: textSpanChildren);
-		// return TextSpan(
-		// 	style: style,
-		// 	children: <TextSpan>[
-		// 		TextSpan(text: value.composing.textBefore(value.text)),
-		// 		TextSpan(
-		// 			style: style,
-		// 			text: value.composing.textInside(value.text),
-		// 		),
-		// 		TextSpan(text: value.composing.textAfter(value.text)),
-		// 	],
-		// );
-
-
 	}
 
 	// void setRegexStyle(List<RegexStyle> styles){

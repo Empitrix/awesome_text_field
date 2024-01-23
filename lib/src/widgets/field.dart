@@ -44,24 +44,15 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 		LineStatus(lineNumber: 0, lineHeight: 0, currentLine: 0));
 
 	late LineNumberPalette linePalette;
-
 	FocusNode keyboardFocus = FocusNode();
 	double topBufferMargin = 11.5;
 	double filedCursorMargin = 0;
-	// line
-	// double lineHeight = 0;
 	ValueNotifier<double> lineHeight = ValueNotifier(0);
 
 
 	void _updateValues(){
-		// WidgetsBinding.instance.addPostFrameCallback((_){
-		// 	linePalette = widget.lineNumberColor ?? LineNumberPalette().getNull(context);
-		// });
 		linePalette = widget.lineNumberColor ?? LineNumberPalette().getNull(context);
-		// regexStyle
-		// widget.controller.regexPatternMatchedList = widget.regexStyle;
 		widget.controller.setRegexStyle(widget.regexStyle);
-		// print(.regexPatternMatchedList);
 	}
 
 	void _update(){
@@ -124,7 +115,6 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 								builder: (_, value, __){
 									return Container(
 										decoration: BoxDecoration(
-											// color: Theme.of(context).colorScheme.secondaryContainer,
 											color: linePalette.background,
 											borderRadius: widget.borderRadius,
 											border: widget.border ?? Border(
@@ -141,7 +131,6 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 													Container(
 														color: (l + 1 == value.currentLine) ?
 															linePalette.onSelectBackground : linePalette.indexBackground,
-															// Theme.of(context).colorScheme.secondaryContainer,
 														height: value.lineHeight,
 														child: Center(
 															child: FittedBox(child: Text(

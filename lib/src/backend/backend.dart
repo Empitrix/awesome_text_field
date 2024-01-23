@@ -10,5 +10,13 @@ bool isDesktop(){
 
 
 String formatEndLine(String input){
-	return input.replaceAll("\u000a", "\u000b");
+	/* Flutter text field can't support "\r" char */
+	// return input.replaceAll("\u000a", "\u000b");
+	// return input.replaceAll("\r", "");
+
+	return input.replaceAll("\r\n", "\n").replaceAll("\n\r", "\n").replaceAll("\r", "\n");
+	// return input.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
+
+	// return utf8.decode(utf8.encode(input));
+
 }

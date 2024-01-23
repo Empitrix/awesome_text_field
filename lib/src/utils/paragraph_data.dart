@@ -60,7 +60,8 @@ int getCurrentNumLine(TextEditingController controller) {
 	if(selection.baseOffset >= 0){
 		textBeforeCursor = formatEndLine(controller.text).substring(0, selection.baseOffset);
 	}
-	int lineNumber = RegExp('\u000b').allMatches(textBeforeCursor).length + 1;
+	// int lineNumber = RegExp('\u000b').allMatches(textBeforeCursor).length + 1;
+	int lineNumber = RegExp('\n').allMatches(textBeforeCursor).length + 1;
 	return lineNumber;
 }
 
