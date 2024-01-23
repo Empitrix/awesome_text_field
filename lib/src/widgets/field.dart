@@ -1,6 +1,5 @@
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
-import 'package:awesome_text_field/src/models/regex_style.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:awesome_text_field/src/utils/keyboard.dart';
@@ -9,15 +8,16 @@ import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 
 
 class AwesomeTextField extends StatefulWidget {
-	// final TextEditingController controller;
 	final AwesomeController controller;
 	final TextStyle style;
 	final FocusNode? focusNode;
 	final InputDecoration decoration;
 	final ValueChanged<String>? onChanged;
 	final int tabSize;
-	// final List<RegexStyle> regexStyle;
+	final BorderRadiusGeometry? borderRadius;
 	final List<RegexGroupStyle> regexStyle;
+	final BoxBorder? border;
+	final LineNumberPalette? lineNumberColor;
 
 	const AwesomeTextField({
 		super.key,
@@ -27,6 +27,9 @@ class AwesomeTextField extends StatefulWidget {
 		this.decoration = const InputDecoration(border: InputBorder.none, hintText: ""),
 		this.onChanged,
 		this.tabSize = 4,
+		this.borderRadius,
+		this.lineNumberColor,
+		this.border,
 		this.regexStyle = const [],
 });
 
@@ -40,6 +43,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	ValueNotifier<LineStatus> lineStatus = ValueNotifier(
 		LineStatus(lineNumber: 0, lineHeight: 0, currentLine: 0));
 
+	late LineNumberPalette linePalette;
+
 	FocusNode keyboardFocus = FocusNode();
 	double topBufferMargin = 11.5;
 	double filedCursorMargin = 0;
@@ -47,7 +52,12 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	// double lineHeight = 0;
 	ValueNotifier<double> lineHeight = ValueNotifier(0);
 
+
 	void _updateValues(){
+		// WidgetsBinding.instance.addPostFrameCallback((_){
+		// 	linePalette = widget.lineNumberColor ?? LineNumberPalette().getNull(context);
+		// });
+		linePalette = widget.lineNumberColor ?? LineNumberPalette().getNull(context);
 		// regexStyle
 		// widget.controller.regexPatternMatchedList = widget.regexStyle;
 		widget.controller.setRegexStyle(widget.regexStyle);
@@ -84,9 +94,10 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 			topBufferMargin = 10;
 			filedCursorMargin = 2;}
 
-		initListener();
+		// initListener();
 
 		WidgetsBinding.instance.addPostFrameCallback((_){
+			initListener();
 			if(widget.controller.text.isNotEmpty){
 				if(widget.controller.text.isNotEmpty){
 					widget.controller.text = formatEndLine(widget.controller.text);
@@ -111,34 +122,34 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 							ValueListenableBuilder(
 								valueListenable: lineStatus,
 								builder: (_, value, __){
-									// return AnimatedContainer(
 									return Container(
 										decoration: BoxDecoration(
-											color: Theme.of(context).colorScheme.secondaryContainer,
-											borderRadius: BorderRadius.circular(5),
-											border: const Border(right: BorderSide(color: Colors.amber, width: 1))
+											// color: Theme.of(context).colorScheme.secondaryContainer,
+											color: linePalette.background,
+											borderRadius: widget.borderRadius,
+											border: widget.border ?? Border(
+												right: BorderSide(color: linePalette.indexColor!, width: 1)
+											)
 										),
-										// width: value.lineNumber > 0 ? 25 : 0,
-										// duration: const Duration(seconds: 1),
 										width: 25,
-										// height: MediaQuery.of(context).size.height +
-										// 	((value.lineNumber - 10) * value.lineHeight),
 										height: MediaQuery.sizeOf(context).height +
-											((value.lineNumber - 10) * value.lineHeight),
+											((value.lineNumber - 8) * value.lineHeight),
 										child: Column(
 											children: [
 												SizedBox(height: topBufferMargin),
 												for(int l = 0; l < (value.lineNumber + 1); l++) if(l != value.lineNumber)
 													Container(
 														color: (l + 1 == value.currentLine) ?
-															Colors.amber :
-															Theme.of(context).colorScheme.secondaryContainer,
+															linePalette.onSelectBackground : linePalette.indexBackground,
+															// Theme.of(context).colorScheme.secondaryContainer,
 														height: value.lineHeight,
 														child: Center(
 															child: FittedBox(child: Text(
 																"${l+1}",
 																style: TextStyle(
-																	color: (l + 1 == value.currentLine) ? Colors.black : Colors.amber,
+																	color: (l + 1 == value.currentLine) ?
+																		linePalette.onSelectIndex :
+																		linePalette.indexColor,
 																	fontWeight: FontWeight.bold
 																)
 															))
