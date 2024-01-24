@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class AwesomeController extends TextEditingController {
 	AwesomeController();
-	List<RegexGroupStyle> regexStyles = [];
+	List<RegexFormattingStyle> regexStyles = [];
 
 	@override
 	set value(TextEditingValue newValue) {
@@ -43,7 +43,7 @@ class AwesomeController extends TextEditingController {
 	}
 
 	// void setRegexStyle(List<RegexStyle> styles){
-	void setRegexStyle(List<RegexGroupStyle> styles){
+	void setRegexStyle(List<RegexFormattingStyle> styles){
 		regexStyles = styles;
 	}
 
@@ -52,30 +52,46 @@ class AwesomeController extends TextEditingController {
 		required String content,
 		required TextStyle textStyle,
 		// required List<RegexStyle> rules,
-		required List<RegexGroupStyle> rules,
+		required List<RegexFormattingStyle> rules,
 	}){
 		List<InlineSpan> spans = [];
 		content.splitMapJoin(
 			RegExp(rules.map((rule) => rule.regex.pattern).join('|'), multiLine: true),
-			onMatch: (match) {
-				String mText = match.group(0)!;
-				RegexGroupStyle mRule = rules.firstWhere((rule) => rule.regex.hasMatch(mText));
-				if(mRule.regexStyles.isEmpty){
-					spans.add(TextSpan(text: mText, style: mRule.style.copyWith(fontSize: textStyle.fontSize)));
-					return "";
-				}
-				for(RegexStyle rStyle in mRule.regexStyles){
-					mText.splitMapJoin(
-						rStyle.regex,
-						onMatch: (Match m){
-							spans.add(TextSpan(text: m.group(0)!, style: rStyle.style.copyWith(fontSize: textStyle.fontSize)));
-							return m.group(0)!;
+			onMatch: (Match match) {
+				String fText = match.group(0)!;
+				RegexFormattingStyle fRule = rules.firstWhere((rule) => rule.regex.hasMatch(fText));
+
+				if(fRule is RegexGroupStyle){
+
+					fText.splitMapJoin(
+						fRule.regexStyle.regex,
+						onMatch: (Match match) {
+							String gText = match.group(0)!;
+							spans.add(TextSpan(text: gText, style: fRule.regexStyle.style.copyWith(fontSize: textStyle.fontSize)));
+							return "";
 						},
-						onNonMatch: (String non){
-							spans.add(TextSpan(text: non, style: mRule.style.copyWith(fontSize: textStyle.fontSize)));
-							return non;
-						}
+						onNonMatch: (nonMatchedText) {
+							spans.add(TextSpan(text: nonMatchedText, style: fRule.style.copyWith(fontSize: textStyle.fontSize)));
+							return "";
+						},
 					);
+
+				} else if (fRule is RegexActionStyle) {
+					if(fRule.action != null){
+						TextSpan actionSpan = fRule.action!(fText, match);
+						if(actionSpan.toPlainText().length == (match.end - match.start)){
+							spans.add(actionSpan);
+						} else {
+							throw RangeError("Length of output is not as same as length of input\nInput: ${(match.end - match.start)}\nOutput: ${actionSpan.toPlainText().length}");
+						}
+					} else {
+						spans.add(TextSpan(
+							text: fText,
+							style: fRule.style.copyWith(fontSize: textStyle.fontSize)
+						));
+					}
+				} else {
+					spans.add(TextSpan(text: fText, style: fRule.style));
 				}
 				return "";
 			},

@@ -15,7 +15,7 @@ class AwesomeTextField extends StatefulWidget {
 	final ValueChanged<String>? onChanged;
 	final int tabSize;
 	final BorderRadiusGeometry? borderRadius;
-	final List<RegexGroupStyle> regexStyle;
+	final List<RegexFormattingStyle> regexStyle;
 	final BoxBorder? border;
 	final LineNumberPalette? lineNumberColor;
 
