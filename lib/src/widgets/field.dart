@@ -1,5 +1,6 @@
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
+import 'package:awesome_text_field/src/widgets/buffer_line.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:awesome_text_field/src/utils/keyboard.dart';
@@ -110,7 +111,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 						mainAxisAlignment: MainAxisAlignment.start,
 						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
-							ValueListenableBuilder(
+
+							/*ValueListenableBuilder(
 								valueListenable: lineStatus,
 								builder: (_, value, __){
 									return Container(
@@ -148,6 +150,13 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 										),
 									);
 								},
+							),*/
+							BufferLine(
+								lineStatus: lineStatus,
+								linePalette: linePalette,
+								borderRadius: widget.borderRadius,
+								border: widget.border,
+								topBufferMargin: topBufferMargin
 							),
 
 							Expanded(
