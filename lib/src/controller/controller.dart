@@ -1,4 +1,5 @@
 import 'package:awesome_text_field/src/backend/backend.dart';
+import 'package:awesome_text_field/src/controller/parse_styles.dart';
 import 'package:awesome_text_field/src/models/regex_style.dart';
 import 'package:flutter/material.dart';
 
@@ -54,6 +55,7 @@ class AwesomeController extends TextEditingController {
 		// required List<RegexStyle> rules,
 		required List<RegexFormattingStyle> rules,
 	}){
+		/*
 		List<InlineSpan> spans = [];
 		content.splitMapJoin(
 			RegExp(rules.map((rule) => rule.regex.pattern).join('|'), multiLine: true),
@@ -105,8 +107,10 @@ class AwesomeController extends TextEditingController {
 				return "";
 			},
 		);
-
 		return TextSpan(children: spans);
+		*/
+		return ApplyRegexFormattingStyle(
+			content: content, rules: rules, textStyle: textStyle).build();
 	}
 
 
