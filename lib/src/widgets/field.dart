@@ -106,51 +106,13 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	Widget build(BuildContext context) {
 		return Builder(
 			builder: (BuildContext context){
-				Widget theWidget = IntrinsicHeight(
+				// Widget theWidget = IntrinsicHeight(
+				Widget theWidget = SizedBox(
 					child: Row(
 						mainAxisAlignment: MainAxisAlignment.start,
 						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
 
-							/*ValueListenableBuilder(
-								valueListenable: lineStatus,
-								builder: (_, value, __){
-									return Container(
-										decoration: BoxDecoration(
-											color: linePalette.background,
-											borderRadius: widget.borderRadius,
-											border: widget.border ?? Border(
-												right: BorderSide(color: linePalette.indexColor!, width: 1)
-											)
-										),
-										width: 25,
-										height: MediaQuery.sizeOf(context).height +
-											((value.lineNumber - 8) * value.lineHeight),
-										child: Column(
-											children: [
-												SizedBox(height: topBufferMargin),
-												for(int l = 0; l < (value.lineNumber + 1); l++) if(l != value.lineNumber)
-													Container(
-														color: (l + 1 == value.currentLine) ?
-															linePalette.onSelectBackground : linePalette.indexBackground,
-														height: value.lineHeight,
-														child: Center(
-															child: FittedBox(child: Text(
-																"${l+1}",
-																style: TextStyle(
-																	color: (l + 1 == value.currentLine) ?
-																		linePalette.onSelectIndex :
-																		linePalette.indexColor,
-																	fontWeight: FontWeight.bold
-																)
-															))
-														),
-													)
-											],
-										),
-									);
-								},
-							),*/
 							BufferLine(
 								lineStatus: lineStatus,
 								linePalette: linePalette,
