@@ -20,7 +20,16 @@ class ApplyRegexFormattingStyle {
 			RegExp(rules.map((rule) => rule.regex.pattern).join('|'), multiLine: true),
 			onMatch: (Match match) {
 				String fText = match.group(0)!;
-				RegexFormattingStyle fRule = rules.firstWhere((rule) => rule.regex.hasMatch(fText));
+
+				RegexFormattingStyle? fRule;
+				try{
+					fRule = rules.firstWhere((rule) => rule.regex.hasMatch(fText));
+				} catch(_){}
+
+				if(fRule == null){
+					spans.add(TextSpan(text: fText, style: textStyle));
+					return "";
+				}
 
 				if(fRule is RegexGroupStyle){
 
@@ -28,14 +37,20 @@ class ApplyRegexFormattingStyle {
 						fRule.regexStyle.regex,
 						onMatch: (Match match) {
 							String gText = match.group(0)!;
-							spans.add(TextSpan(
-								text: gText, style: fRule.regexStyle.style
-								.copyWith(fontSize: textStyle!.fontSize)));
+							// idk (should add this to work)
+							if(fRule is RegexGroupStyle){
+								spans.add(TextSpan(
+									text: gText, style: fRule.regexStyle.style
+									.copyWith(fontSize: textStyle!.fontSize)));
+							} else {
+								// If just in case failed (should never happen (need to fix))
+								spans.add(TextSpan(text: gText, style: textStyle));
+							}
 							return "";
 						},
 						onNonMatch: (nonMatchedText) {
 							spans.add(TextSpan(
-								text: nonMatchedText, style: fRule.style.copyWith(fontSize: textStyle!.fontSize)));
+								text: nonMatchedText, style: fRule!.style.copyWith(fontSize: textStyle!.fontSize)));
 							return "";
 						},
 					);
