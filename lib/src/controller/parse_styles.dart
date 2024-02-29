@@ -16,6 +16,9 @@ class ApplyRegexFormattingStyle {
 
 	TextSpan build(){
 		List<TextSpan> spans = [];  // All the spans
+
+
+
 		content.splitMapJoin(
 			RegExp(rules.map((rule) => rule.regex.pattern).join('|'), multiLine: true),
 			onMatch: (Match match) {
@@ -58,13 +61,18 @@ class ApplyRegexFormattingStyle {
 				} else if (fRule is RegexActionStyle) {
 					if(fRule.action != null){
 						TextSpan actionSpan = fRule.action!(fText, match);
+
 						if(actionSpan.toPlainText().length == (match.end - match.start)){
 							spans.add(actionSpan);
 						} else {
-							throw RangeError(
-								"Length of output is not as same as length of input\nInput"
-									": ${(match.end - match.start)}\nOutput: ${actionSpan.toPlainText().length}");
+							debugPrint("Length of output is not as same as length of input\nInput"
+								": ${(match.end - match.start)}\nOutput: ${actionSpan.toPlainText().length}");
+							spans.add(TextSpan(text: fText, style: textStyle));
+							// throw RangeError(
+							// 	"Length of output is not as same as length of input\nInput"
+							// 		": ${(match.end - match.start)}\nOutput: ${actionSpan.toPlainText().length}");
 						}
+
 					} else {
 						spans.add(TextSpan(
 							text: fText,
@@ -86,6 +94,12 @@ class ApplyRegexFormattingStyle {
 				return "";
 			},
 		);
+
+
+		/*} catch(e){
+			debugPrint("Error: $e");
+			spans.add(TextSpan(text: content, style: textStyle));
+		}*/
 
 		return TextSpan(children: spans);
 	}  // {@End-Build}
