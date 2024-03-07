@@ -10,6 +10,7 @@ class BufferLine extends StatelessWidget {
 		required this.lineStatus,
 		required this.linePalette,
 		required this.borderRadius,
+		required this.lineChanged,
 		required this.border,
 		required this.topBufferMargin
 	});
@@ -20,11 +21,14 @@ class BufferLine extends StatelessWidget {
 	final BoxBorder? border;
 	final double topBufferMargin;
 
+	final ValueChanged<LineStatus> lineChanged;
+
 	@override
 	Widget build(BuildContext context) {
 		return ValueListenableBuilder(
 			valueListenable: lineStatus,
 			builder: (_, value, __){
+				lineChanged(value);
 				return Container(
 					decoration: BoxDecoration(
 						color: linePalette.background,

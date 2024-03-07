@@ -19,6 +19,7 @@ class AwesomeTextField extends StatefulWidget {
 	final List<RegexFormattingStyle> regexStyle;
 	final BoxBorder? border;
 	final LineNumberPalette? lineNumberColor;
+	final ValueChanged<LineStatus>? lineChanged;
 
 	const AwesomeTextField({
 		super.key,
@@ -30,6 +31,7 @@ class AwesomeTextField extends StatefulWidget {
 		this.tabSize = 4,
 		this.borderRadius,
 		this.lineNumberColor,
+		this.lineChanged,
 		this.border,
 		this.regexStyle = const [],
 });
@@ -120,7 +122,7 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 						children: [
 							SizedBox(
 								// TODO: Fix Here
-								height: MediaQuery.of(context).size.height - 217,
+								height: MediaQuery.of(context).size.height - 217 - 5 - 13,
 								child: ScrollConfiguration(
 									behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
 									child: SingleChildScrollView(
@@ -130,6 +132,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 										child: BufferLine(
 											lineStatus: lineStatus,
 											linePalette: linePalette,
+											lineChanged: widget.lineChanged != null ? widget.lineChanged! : (_){},
+											// lineChanged: widget.lineChanged!,
 											borderRadius: widget.borderRadius,
 											border: widget.border,
 											topBufferMargin: topBufferMargin - 1.5
@@ -147,7 +151,7 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 											child: IntrinsicHeight(
 												child: Container(
 													// TODO: Fix Here
-													height: MediaQuery.of(context).size.height - 217,
+													height: MediaQuery.of(context).size.height - 217 - 5 - 15,
 													margin: EdgeInsets.only(
 														top: filedCursorMargin,
 														left: 5
@@ -161,19 +165,21 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 															if(ctrlValue != null){ widget.controller.value = ctrlValue; }
 															keyboardFocus.requestFocus();
 														},
-														child: TextField(
-															controller: widget.controller,
-															focusNode: keyboardFocus,
-															expands: true,
-															// scrollPhysics: const NeverScrollableScrollPhysics(),
-															scrollController: editorCtrl,
-															keyboardType: TextInputType.multiline,
-															cursorHeight: lHeight,
-															style: widget.style,
-															decoration: widget.decoration.copyWith(border: InputBorder.none),
-															autofocus: true,
-															maxLines: null,
-															onChanged: widget.onChanged,
+														child: ScrollConfiguration(
+															behavior: HideScrollbarBehavior(),
+															child: TextField(
+																controller: widget.controller,
+																focusNode: keyboardFocus,
+																expands: true,
+																scrollController: editorCtrl,
+																keyboardType: TextInputType.multiline,
+																cursorHeight: lHeight,
+																style: widget.style,
+																decoration: widget.decoration.copyWith(border: InputBorder.none),
+																autofocus: true,
+																maxLines: null,
+																onChanged: widget.onChanged,
+															)
 														)
 													)
 												),
@@ -191,3 +197,14 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 		);
 	}
 }
+
+
+/* Behavior for hiding scroll-bar for Text-Field */
+class HideScrollbarBehavior extends MaterialScrollBehavior {
+	@override
+	Widget buildScrollbar(
+		BuildContext context,
+		Widget child,
+		ScrollableDetails details) => child;
+}
+
