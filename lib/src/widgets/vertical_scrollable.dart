@@ -17,39 +17,14 @@ class VerticalScrollable extends StatelessWidget {
 			mainAxisSize: MainAxisSize.min,
 			crossAxisAlignment: CrossAxisAlignment.start,
 			children: [
-
 				SingleChildScrollView(
 					controller: ctrl,
 					scrollDirection: Axis.horizontal,
 					child: IntrinsicWidth(
 						child: child,
 					),
-					// child: SizedBox(
-					// 	width: width ?? MediaQuery.of(context).size.width,
-					// 	child: child,
-					// ),
 				)
-
 			],
 		);
-		// return SizedBox(
-		// 	// width: width ?? MediaQuery.of(context).size.width,
-		// 	child: Column(
-		// 		mainAxisSize: MainAxisSize.min,
-		// 		crossAxisAlignment: CrossAxisAlignment.start,
-		// 		children: [
-		//
-		// 			SingleChildScrollView(
-		// 				controller: ctrl,
-		// 				scrollDirection: Axis.horizontal,
-		// 				child: SizedBox(
-		// 					width: width ?? MediaQuery.of(context).size.width,
-		// 					child: child,
-		// 				),
-		// 			)
-		//
-		// 		],
-		// 	)
-		// );
 	}
 }

@@ -1,11 +1,11 @@
+import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
 import 'package:awesome_text_field/src/widgets/buffer_line.dart';
-import 'package:flutter/material.dart';
 import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:awesome_text_field/src/utils/keyboard.dart';
 import 'package:awesome_text_field/src/utils/paragraph_data.dart';
-import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
+import 'package:flutter/material.dart';
 
 
 class AwesomeTextField extends StatefulWidget {
@@ -49,6 +49,10 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	double topBufferMargin = 11.5;
 	double filedCursorMargin = 0;
 	ValueNotifier<double> lineHeight = ValueNotifier(0);
+
+
+	ScrollController bufferCtrl = ScrollController();
+	ScrollController editorCtrl = ScrollController();
 
 
 	void _updateValues(){
@@ -99,6 +103,9 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 			lineHeight.value = calcLineHeight(" ", widget.style);
 		});
 
+		// Attach buffer-line scroll-controller in with editor
+		editorCtrl.addListener(() { bufferCtrl.jumpTo(editorCtrl.offset); });
+
 		super.initState();
 	}
 
@@ -106,19 +113,30 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	Widget build(BuildContext context) {
 		return Builder(
 			builder: (BuildContext context){
-				// Widget theWidget = IntrinsicHeight(
 				Widget theWidget = SizedBox(
 					child: Row(
 						mainAxisAlignment: MainAxisAlignment.start,
 						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
-
-							BufferLine(
-								lineStatus: lineStatus,
-								linePalette: linePalette,
-								borderRadius: widget.borderRadius,
-								border: widget.border,
-								topBufferMargin: topBufferMargin
+							SizedBox(
+								// TODO: Fix Here
+								height: MediaQuery.of(context).size.height - 217,
+								child: ScrollConfiguration(
+									behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+									child: SingleChildScrollView(
+										physics: const ClampingScrollPhysics(
+											parent: NeverScrollableScrollPhysics()),
+										controller: bufferCtrl,
+										child: BufferLine(
+											lineStatus: lineStatus,
+											linePalette: linePalette,
+											borderRadius: widget.borderRadius,
+											border: widget.border,
+											topBufferMargin: topBufferMargin - 1.5
+											// topBufferMargin: 10
+										)
+									),
+								)
 							),
 
 							Expanded(
@@ -128,6 +146,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 										return VerticalScrollable(
 											child: IntrinsicHeight(
 												child: Container(
+													// TODO: Fix Here
+													height: MediaQuery.of(context).size.height - 217,
 													margin: EdgeInsets.only(
 														top: filedCursorMargin,
 														left: 5
@@ -145,6 +165,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 															controller: widget.controller,
 															focusNode: keyboardFocus,
 															expands: true,
+															// scrollPhysics: const NeverScrollableScrollPhysics(),
+															scrollController: editorCtrl,
 															keyboardType: TextInputType.multiline,
 															cursorHeight: lHeight,
 															style: widget.style,

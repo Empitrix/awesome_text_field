@@ -25,8 +25,6 @@ class BufferLine extends StatelessWidget {
 		return ValueListenableBuilder(
 			valueListenable: lineStatus,
 			builder: (_, value, __){
-				// print(value.lineNumber);
-				// print(calcTextSize(context, "${value.lineNumber}").width);
 				return Container(
 					decoration: BoxDecoration(
 						color: linePalette.background,
@@ -35,17 +33,9 @@ class BufferLine extends StatelessWidget {
 							right: BorderSide(color: linePalette.indexColor!, width: 1)
 						)
 					),
-					// width: 25,
 					width: calcTextSize(context, "${value.lineNumber}").width + 10,
-
 					height: MediaQuery.sizeOf(context).height +
 						((value.lineNumber - 8) * value.lineHeight),
-
-					// height: MediaQuery.sizeOf(context).height + (value.lineNumber * value.lineHeight),
-					// height: ((99 * MediaQuery.sizeOf(context).height) / 100) + (value.lineNumber * value.lineHeight),
-					// height: value.lineHeight * (value.lineNumber + 1),
-
-
 					child: Column(
 						children: [
 							SizedBox(height: topBufferMargin),
@@ -55,27 +45,16 @@ class BufferLine extends StatelessWidget {
 										linePalette.onSelectBackground : linePalette.indexBackground,
 									height: value.lineHeight,
 									width: 50,
-									/*child: Center(
-										child: FittedBox(child: Text(
-											"${l+1}",
-											style: TextStyle(
-												color: (l + 1 == value.currentLine) ?
-												linePalette.onSelectIndex :
-												linePalette.indexColor,
-												fontWeight: FontWeight.bold
-											)
-										))
-									),*/
 									child: Align(
 										alignment: Alignment.centerRight,
 										child: FittedBox(child: Text(
-											"${l+1}  ",
+											"${l+1}\u2009\u2009",
 											style: TextStyle(
 												color: (l + 1 == value.currentLine) ?
-												linePalette.onSelectIndex :
-												linePalette.indexColor,
+													linePalette.onSelectIndex :
+													linePalette.indexColor,
 												fontWeight: FontWeight.bold,
-												fontSize: 10
+												fontSize: 9
 											)
 										))
 									),
