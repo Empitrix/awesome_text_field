@@ -1,5 +1,4 @@
 import 'package:awesome_text_field/awesome_text_field.dart';
-import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:awesome_text_field/src/utils/paragraph_data.dart';
 import 'package:flutter/material.dart';
 

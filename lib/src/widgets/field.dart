@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
 import 'package:awesome_text_field/src/widgets/buffer_line.dart';
-import 'package:awesome_text_field/src/models/line_status.dart';
 import 'package:awesome_text_field/src/utils/keyboard.dart';
 import 'package:awesome_text_field/src/utils/paragraph_data.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class AwesomeTextField extends StatefulWidget {
 	final BoxBorder? border;
 	final LineNumberPalette? lineNumberColor;
 	final ValueChanged<LineStatus>? lineChanged;
+	final double widgetHeight;
 
 	const AwesomeTextField({
 		super.key,
@@ -33,6 +35,7 @@ class AwesomeTextField extends StatefulWidget {
 		this.lineNumberColor,
 		this.lineChanged,
 		this.border,
+		this.widgetHeight = 200,
 		this.regexStyle = const [],
 });
 
@@ -122,7 +125,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 						children: [
 							SizedBox(
 								// TODO: Fix Here
-								height: MediaQuery.of(context).size.height - 217 - 5 - 13,
+								height: widget.widgetHeight,
+								// height: MediaQuery.of(context).size.height - 217 - 5 - 13 + (Platform.isAndroid ? -5 : 0),
 								child: ScrollConfiguration(
 									behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
 									child: SingleChildScrollView(
@@ -151,7 +155,8 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 											child: IntrinsicHeight(
 												child: Container(
 													// TODO: Fix Here
-													height: MediaQuery.of(context).size.height - 217 - 5 - 15,
+													// height: MediaQuery.of(context).size.height - 217 - 5 - 15 + (Platform.isAndroid ? -5 : 0),
+													height: widget.widgetHeight,
 													margin: EdgeInsets.only(
 														top: filedCursorMargin,
 														left: 5
