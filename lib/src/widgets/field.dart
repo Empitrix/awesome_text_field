@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';

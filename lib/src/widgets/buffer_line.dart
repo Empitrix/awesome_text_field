@@ -37,8 +37,9 @@ class BufferLine extends StatelessWidget {
 						)
 					),
 					width: calcTextSize(context, "${value.lineNumber}").width + 10,
-					height: MediaQuery.sizeOf(context).height +
-						((value.lineNumber - 8) * value.lineHeight),
+					height: MediaQuery.sizeOf(context).height + ((value.lineNumber - 1) * value.lineHeight),
+					// height: MediaQuery.sizeOf(context).height +
+					// 	((value.lineNumber - 8) * value.lineHeight),
 					child: Column(
 						children: [
 							SizedBox(height: topBufferMargin),
