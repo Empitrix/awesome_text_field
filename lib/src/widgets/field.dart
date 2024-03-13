@@ -47,7 +47,7 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 
 
 	ValueNotifier<LineStatus> lineStatus = ValueNotifier(
-		LineStatus(lineNumber: 0, lineHeight: 0, currentLine: 0));
+		LineStatus(lineNumber: 0, lineHeight: 0, currentLine: 0, currentCol: 0));
 
 	late LineNumberPalette linePalette;
 	FocusNode keyboardFocus = FocusNode();
@@ -124,9 +124,7 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 						crossAxisAlignment: CrossAxisAlignment.start,
 						children: [
 							SizedBox(
-								// TODO: Fix Here
 								height: widget.widgetHeight,
-								// height: MediaQuery.of(context).size.height - 217 - 5 - 13 + (Platform.isAndroid ? -5 : 0),
 								child: ScrollConfiguration(
 									behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
 									child: SingleChildScrollView(
@@ -137,11 +135,9 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 											lineStatus: lineStatus,
 											linePalette: linePalette,
 											lineChanged: widget.lineChanged != null ? widget.lineChanged! : (_){},
-											// lineChanged: widget.lineChanged!,
 											borderRadius: widget.borderRadius,
 											border: widget.border,
 											topBufferMargin: topBufferMargin - 1.5
-											// topBufferMargin: 10
 										)
 									),
 								)
@@ -193,7 +189,6 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 									},
 								),
 							)
-
 						],
 					),
 				);

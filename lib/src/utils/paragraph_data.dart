@@ -84,11 +84,31 @@ void updateDisplayedLineCount({
 	List<String> line = controller.text.split("\n");
 	line.sort((a, b) => a.length.compareTo(b.length));
 
+	int currentLineNum = getCurrentNumLine(controller);
+
+
+	/* Current Line Column */
+	int currentCol = 0;
+	// Try is because that if user change the text so fast don't cause any err
+	try{
+		// Calculate current column in line
+		currentCol = controller.value.selection.baseOffset;
+		int a = controller.text.split("\n").sublist(0, currentLineNum).join("\n").length;
+		int b = controller.text.split("\n")[currentLineNum - 1].length;
+		currentCol = currentCol - (a - b);
+	} catch(_){}
+	if(currentCol < 0){ currentCol = 0; }
+
+
+
 	onUpdate(
 		LineStatus(
 			lineNumber: metrics.length,
-			lineHeight: metrics.isNotEmpty ? metrics.first.height: calcTextSize(context, "", style).height,
-			currentLine: getCurrentNumLine(controller),
+			lineHeight: metrics.isNotEmpty ?
+				metrics.first.height:
+				calcTextSize(context, "", style).height,
+			currentCol: currentCol,
+			currentLine: currentLineNum,
 		)
 	);
 
