@@ -135,7 +135,9 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 											lineChanged: widget.lineChanged != null ? widget.lineChanged! : (_){},
 											borderRadius: widget.borderRadius,
 											border: widget.border,
-											topBufferMargin: topBufferMargin - 1.5
+											// topBufferMargin: topBufferMargin - 1.5
+											// topBufferMargin: topBufferMargin - 3.5
+											topBufferMargin: topBufferMargin - 4.2
 										)
 									),
 								)
