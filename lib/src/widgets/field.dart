@@ -116,81 +116,75 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	Widget build(BuildContext context) {
 		return Builder(
 			builder: (BuildContext context){
-				Widget theWidget = SizedBox(
-					child: Row(
-						mainAxisAlignment: MainAxisAlignment.start,
-						crossAxisAlignment: CrossAxisAlignment.start,
-						children: [
-							SizedBox(
-								height: widget.widgetHeight,
-								child: ScrollConfiguration(
-									behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-									child: SingleChildScrollView(
-										physics: const ClampingScrollPhysics(
-											parent: NeverScrollableScrollPhysics()),
-										controller: bufferCtrl,
-										child: BufferLine(
-											lineStatus: lineStatus,
-											linePalette: linePalette,
-											lineChanged: widget.lineChanged != null ? widget.lineChanged! : (_){},
-											borderRadius: widget.borderRadius,
-											border: widget.border,
-											// topBufferMargin: topBufferMargin - 1.5
-											// topBufferMargin: topBufferMargin - 3.5
-											topBufferMargin: topBufferMargin - 4.2
-										)
-									),
+				Widget theWidget = Row(
+					mainAxisAlignment: MainAxisAlignment.start,
+					crossAxisAlignment: CrossAxisAlignment.start,
+					children: [
+
+						SizedBox(height: widget.widgetHeight, child: ScrollConfiguration(
+						// FittedBox(fit: BoxFit.fitHeight, child: ScrollConfiguration(
+							behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+							child: SingleChildScrollView(
+								physics: const ClampingScrollPhysics(
+									parent: NeverScrollableScrollPhysics()),
+								controller: bufferCtrl,
+								child: BufferLine(
+									lineStatus: lineStatus,
+									linePalette: linePalette,
+									lineChanged: widget.lineChanged != null ? widget.lineChanged! : (_){},
+									borderRadius: widget.borderRadius,
+									border: widget.border,
+									// topBufferMargin: topBufferMargin - 1.5
+									// topBufferMargin: topBufferMargin - 3.5
+									topBufferMargin: topBufferMargin - 4.2
 								)
 							),
-
-							Expanded(
-								child: ValueListenableBuilder(
-									valueListenable: lineHeight,
-									builder: (_, lHeight, __){
-										return VerticalScrollable(
-											child: IntrinsicHeight(
-												child: Container(
-													// TODO: Fix Here
-													// height: MediaQuery.of(context).size.height - 217 - 5 - 15 + (Platform.isAndroid ? -5 : 0),
-													height: widget.widgetHeight,
-													margin: EdgeInsets.only(
-														top: filedCursorMargin,
-														left: 5
-													),
-													child: KeyboardListener(
-														focusNode: FocusNode(),
-														autofocus: true,
-														onKeyEvent: (KeyEvent event) async {
-															TextEditingValue? ctrlValue = applyKeyboardAction(
-																event: event, controller: widget.controller, tabSize: 4);
-															if(ctrlValue != null){ widget.controller.value = ctrlValue; }
-															keyboardFocus.requestFocus();
-														},
-														child: ScrollConfiguration(
-															behavior: HideScrollbarBehavior(),
-															child: TextField(
-																controller: widget.controller,
-																focusNode: keyboardFocus,
-																expands: true,
-																scrollController: editorCtrl,
-																keyboardType: TextInputType.multiline,
-																cursorHeight: lHeight,
-																style: widget.style,
-																decoration: widget.decoration.copyWith(border: InputBorder.none),
-																autofocus: true,
-																maxLines: null,
-																onChanged: widget.onChanged,
-															)
+						)),
+						Expanded(
+							child: ValueListenableBuilder(
+								valueListenable: lineHeight,
+								builder: (_, lHeight, __){
+									return VerticalScrollable(
+										child: IntrinsicHeight(
+											child: Container(
+												height: widget.widgetHeight,
+												margin: EdgeInsets.only(
+													top: filedCursorMargin,
+													left: 5
+												),
+												child: KeyboardListener(
+													focusNode: FocusNode(),
+													autofocus: true,
+													onKeyEvent: (KeyEvent event) async {
+														TextEditingValue? ctrlValue = applyKeyboardAction(
+															event: event, controller: widget.controller, tabSize: 4);
+														if(ctrlValue != null){ widget.controller.value = ctrlValue; }
+														keyboardFocus.requestFocus();
+													},
+													child: ScrollConfiguration(
+														behavior: HideScrollbarBehavior(),
+														child: TextField(
+															controller: widget.controller,
+															focusNode: keyboardFocus,
+															expands: true,
+															scrollController: editorCtrl,
+															keyboardType: TextInputType.multiline,
+															cursorHeight: lHeight,
+															style: widget.style,
+															decoration: widget.decoration.copyWith(border: InputBorder.none),
+															autofocus: true,
+															maxLines: null,
+															onChanged: widget.onChanged,
 														)
 													)
-												),
+												)
 											),
-										);
-									},
-								),
-							)
-						],
-					),
+										),
+									);
+								},
+							),
+						)
+					],
 				);
 				return theWidget;
 			},
