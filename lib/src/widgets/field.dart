@@ -20,6 +20,7 @@ class AwesomeTextField extends StatefulWidget {
 	final LineNumberPalette? lineNumberColor;
 	final ValueChanged<LineStatus>? lineChanged;
 	final double widgetHeight;
+	final bool wrapMode;
 
 	const AwesomeTextField({
 		super.key,
@@ -34,6 +35,7 @@ class AwesomeTextField extends StatefulWidget {
 		this.lineChanged,
 		this.border,
 		this.widgetHeight = 200,
+		this.wrapMode = false,
 		this.regexStyle = const [],
 });
 
@@ -116,6 +118,30 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 	Widget build(BuildContext context) {
 		return Builder(
 			builder: (BuildContext context){
+
+				if(widget.wrapMode){
+					return ScrollConfiguration(
+						// behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+						behavior: HideScrollbarBehavior(),
+						child: Container(
+							height: widget.widgetHeight + 2,
+							padding: const EdgeInsets.all(5),
+							child: TextField(
+								controller: widget.controller,
+								focusNode: keyboardFocus,
+								// expands: true,
+								// scrollController: editorCtrl,
+								keyboardType: TextInputType.multiline,
+								// cursorHeight: lHeight,
+								style: widget.style,
+								decoration: widget.decoration.copyWith(border: InputBorder.none),
+								autofocus: true,
+								maxLines: null,
+								onChanged: widget.onChanged,
+							)
+						),
+					);
+				}
 				Widget theWidget = Row(
 					mainAxisAlignment: MainAxisAlignment.start,
 					crossAxisAlignment: CrossAxisAlignment.start,
