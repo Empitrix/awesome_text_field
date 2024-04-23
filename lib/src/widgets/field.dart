@@ -120,26 +120,34 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 			builder: (BuildContext context){
 
 				if(widget.wrapMode){
-					return ScrollConfiguration(
-						// behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-						behavior: HideScrollbarBehavior(),
-						child: Container(
-							height: widget.widgetHeight + 2,
-							padding: const EdgeInsets.all(5),
-							child: TextField(
-								controller: widget.controller,
-								focusNode: keyboardFocus,
-								// expands: true,
-								// scrollController: editorCtrl,
-								keyboardType: TextInputType.multiline,
-								// cursorHeight: lHeight,
-								style: widget.style,
-								decoration: widget.decoration.copyWith(border: InputBorder.none),
-								autofocus: true,
-								maxLines: null,
-								onChanged: widget.onChanged,
-							)
-						),
+
+					return ValueListenableBuilder(
+						valueListenable: lineStatus,
+						builder: (_, value, __){
+							if(widget.lineChanged != null){
+								widget.lineChanged!(value);
+							}
+							return ScrollConfiguration(
+								behavior: HideScrollbarBehavior(),
+								child: Container(
+									height: widget.widgetHeight + 2,
+									padding: const EdgeInsets.all(5),
+									child: TextField(
+										controller: widget.controller,
+										focusNode: keyboardFocus,
+										// expands: true,
+										// scrollController: editorCtrl,
+										keyboardType: TextInputType.multiline,
+										// cursorHeight: lHeight,
+										style: widget.style,
+										decoration: widget.decoration.copyWith(border: InputBorder.none),
+										autofocus: true,
+										maxLines: null,
+										onChanged: widget.onChanged,
+									)
+								),
+							);
+						}
 					);
 				}
 				Widget theWidget = Row(
