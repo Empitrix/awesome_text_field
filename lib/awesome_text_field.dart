@@ -6,3 +6,4 @@ export 'src/models/regex_style.dart';
 export 'src/models/line_status.dart';
 export 'src/models/line_number_palette.dart';
 export 'src/controller/parse_styles.dart';
+export 'src/backend/keyboard.dart';

@@ -1,3 +1,5 @@
+import 'package:awesome_text_field/src/backend/keyboard.dart';
+import 'package:awesome_text_field/src/utils/insert_data.dart';
 import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
@@ -13,7 +15,7 @@ class AwesomeTextField extends StatefulWidget {
 	final FocusNode? focusNode;
 	final InputDecoration decoration;
 	final ValueChanged<String>? onChanged;
-	final int tabSize;
+	final int? tabSize;
 	final BorderRadiusGeometry? borderRadius;
 	final List<RegexFormattingStyle> regexStyle;
 	final BoxBorder? border;
@@ -21,6 +23,7 @@ class AwesomeTextField extends StatefulWidget {
 	final ValueChanged<LineStatus>? lineChanged;
 	final double widgetHeight;
 	final bool wrapMode;
+	final List<KeyboardActivator> keyboardActivators;
 
 	const AwesomeTextField({
 		super.key,
@@ -29,7 +32,7 @@ class AwesomeTextField extends StatefulWidget {
 		this.focusNode,
 		this.decoration = const InputDecoration(border: InputBorder.none, hintText: ""),
 		this.onChanged,
-		this.tabSize = 4,
+		this.tabSize,
 		this.borderRadius,
 		this.lineNumberColor,
 		this.lineChanged,
@@ -37,6 +40,7 @@ class AwesomeTextField extends StatefulWidget {
 		this.widgetHeight = 200,
 		this.wrapMode = false,
 		this.regexStyle = const [],
+		this.keyboardActivators = const []
 });
 
 	@override
@@ -186,14 +190,56 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 													top: filedCursorMargin,
 													left: 5
 												),
-												child: KeyboardListener(
+												/*child: KeyboardListener(
 													focusNode: FocusNode(),
 													autofocus: true,
 													onKeyEvent: (KeyEvent event) async {
 														TextEditingValue? ctrlValue = applyKeyboardAction(
-															event: event, controller: widget.controller, tabSize: 4);
+															event: event, controller: widget.controller, tabSize: widget.tabSize);
 														if(ctrlValue != null){ widget.controller.value = ctrlValue; }
 														keyboardFocus.requestFocus();
+													},
+													child: ScrollConfiguration(
+														behavior: HideScrollbarBehavior(),
+														child: TextField(
+															controller: widget.controller,
+															focusNode: keyboardFocus,
+															expands: true,
+															scrollController: editorCtrl,
+															keyboardType: TextInputType.multiline,
+															cursorHeight: lHeight,
+															style: widget.style,
+															decoration: widget.decoration.copyWith(border: InputBorder.none),
+															autofocus: true,
+															maxLines: null,
+															onChanged: widget.onChanged,
+														)
+													)
+												)*/
+												child: Focus(
+													focusNode: FocusNode(),
+													autofocus: true,
+													/*onKeyEvent: (KeyEvent event) async {
+														TextEditingValue? ctrlValue = applyKeyboardAction(
+															event: event, controller: widget.controller, tabSize: widget.tabSize);
+														if(ctrlValue != null){ widget.controller.value = ctrlValue; }
+														keyboardFocus.requestFocus();
+													},*/
+													onKeyEvent: (FocusNode node, KeyEvent event){
+														// Check For Tab Size
+														if(widget.tabSize != null){
+															if(checkKeyboardKey(event.logicalKey).onTab){
+																widget.controller.value = insertData(
+																	widget.controller, " " * widget.tabSize!);
+															}
+														}
+														for(KeyboardActivator activator in widget.keyboardActivators){
+															AlternateKeyboard alter = checkKeyboardKey(event.logicalKey);
+															if(alter.check(activator.activator)){
+																return activator.action(node, event, widget.controller.value);
+															}
+														}
+														return KeyEventResult.ignored;
 													},
 													child: ScrollConfiguration(
 														behavior: HideScrollbarBehavior(),
