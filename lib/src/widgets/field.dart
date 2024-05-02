@@ -1,10 +1,8 @@
-import 'package:awesome_text_field/src/backend/keyboard.dart';
 import 'package:awesome_text_field/src/utils/insert_data.dart';
 import 'package:awesome_text_field/src/widgets/vertical_scrollable.dart';
 import 'package:awesome_text_field/awesome_text_field.dart';
 import 'package:awesome_text_field/src/backend/backend.dart';
 import 'package:awesome_text_field/src/widgets/buffer_line.dart';
-import 'package:awesome_text_field/src/utils/keyboard.dart';
 import 'package:awesome_text_field/src/utils/paragraph_data.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +22,8 @@ class AwesomeTextField extends StatefulWidget {
 	final double widgetHeight;
 	final bool wrapMode;
 	final List<KeyboardActivator> keyboardActivators;
+	// final Function(double)? onOffsetChange;
+	final Function(ScrollPosition)? onOffsetChange;
 
 	const AwesomeTextField({
 		super.key,
@@ -40,7 +40,8 @@ class AwesomeTextField extends StatefulWidget {
 		this.widgetHeight = 200,
 		this.wrapMode = false,
 		this.regexStyle = const [],
-		this.keyboardActivators = const []
+		this.keyboardActivators = const [],
+		this.onOffsetChange,
 });
 
 	@override
@@ -113,7 +114,14 @@ class _AwesomeTextFieldState extends State<AwesomeTextField> {
 		});
 
 		// Attach buffer-line scroll-controller in with editor
-		editorCtrl.addListener(() { bufferCtrl.jumpTo(editorCtrl.offset); });
+		// editorCtrl.addListener(() { bufferCtrl.jumpTo(editorCtrl.offset); });
+		editorCtrl.addListener(() {
+			bufferCtrl.jumpTo(editorCtrl.offset);
+			if(widget.onOffsetChange != null){
+				// widget.onOffsetChange!(editorCtrl.offset);
+				widget.onOffsetChange!(editorCtrl.position);
+			}
+		});
 
 		super.initState();
 	}
